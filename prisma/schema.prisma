@@ -60,7 +60,7 @@ model subConfettiChannel {
     name          String
     createdAt     DateTime @default(now())
     updatedAt     DateTime @updatedAt
-    image         String?
+    image         String?  @default("https://placehold.co/100x100/000000/FFFFFF")
     username      String
     createdBy     User @relation(fields: [createdById], references: [id])
     createdById   String
@@ -90,6 +90,7 @@ model Member {
 
     @@index([subConfettiChannelId])
     @@index([userId])
+    @@index([role])
 }
 
 
