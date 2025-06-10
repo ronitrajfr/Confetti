@@ -2,6 +2,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import { type DefaultSession, type NextAuthConfig } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { db } from "~/server/db";
+import axios from "axios";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -43,6 +44,21 @@ export const authConfig = {
      */
   ],
   adapter: PrismaAdapter(db),
+  events: {
+    async createUser({ user }) {
+      try {
+        const res = await axios.get("https://randomuser.me/api/");
+        const randomUsername = res.data.results[0].login.username;
+
+        await db.user.update({
+          where: { id: user.id },
+          data: { username: randomUsername },
+        });
+      } catch (error) {
+        console.error("Failed to assign random username:", error);
+      }
+    },
+  },
   callbacks: {
     session: ({ session, user }) => ({
       ...session,
