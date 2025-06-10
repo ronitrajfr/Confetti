@@ -166,6 +166,29 @@ const subConfettiChannelPatchSchema = z.object({
 
 export async function PATCH(req: NextRequest) {
   try {
+    const headersList = await headers();
+    const ip = headersList.get("x-forwarded-for") ?? "anonymous";
+    const { success, limit, reset, remaining } =
+      await postReqRateLimit.limit(ip);
+
+    if (!success) {
+      return NextResponse.json(
+        {
+          error: "Too many requests",
+          limit,
+          reset,
+          remaining,
+        },
+        {
+          status: 429,
+          headers: {
+            "X-RateLimit-Limit": limit.toString(),
+            "X-RateLimit-Remaining": remaining.toString(),
+            "X-RateLimit-Reset": reset.toString(),
+          },
+        },
+      );
+    }
     const session = await auth();
 
     if (!session?.user) {
