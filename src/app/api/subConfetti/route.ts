@@ -75,6 +75,8 @@ export async function POST(req: NextRequest) {
       return { channel: subConfettiChannel, member };
     });
 
+    await redis.del(`subConfettiChannels:${session.user.id}`);
+
     return NextResponse.json(
       {
         channel: result.channel,
@@ -144,6 +146,8 @@ export async function DELETE(req: NextRequest) {
         id,
       },
     });
+
+    await redis.del(`subConfettiChannels:${session.user.id}`);
 
     return NextResponse.json(
       { message: "Channel deleted successfully" },
@@ -232,6 +236,8 @@ export async function PATCH(req: NextRequest) {
       data: updateData,
     });
 
+    await redis.del(`subConfettiChannels:${session.user.id}`);
+
     return NextResponse.json(
       {
         data: updatedSubConfettiChannel,
@@ -240,6 +246,80 @@ export async function PATCH(req: NextRequest) {
       { status: 200 },
     );
   } catch (error) {
-    return NextResponse.json({ error: error }, { status: 505 });
+    return NextResponse.json({ error }, { status: 500 });
+  }
+}
+
+const getReqRateLimit = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(30, "10 s"),
+  analytics: true,
+});
+
+export async function GET() {
+  try {
+    const headersList = await headers();
+    const ip = headersList.get("x-forwarded-for") ?? "anonymous";
+
+    const { success, limit, reset, remaining } =
+      await getReqRateLimit.limit(ip);
+
+    if (!success) {
+      return NextResponse.json(
+        { error: "Too many requests", limit, reset, remaining },
+        {
+          status: 429,
+          headers: {
+            "X-RateLimit-Limit": limit.toString(),
+            "X-RateLimit-Remaining": remaining.toString(),
+            "X-RateLimit-Reset": reset.toString(),
+          },
+        },
+      );
+    }
+
+    const session = await auth();
+    if (!session?.user) {
+      return NextResponse.json({ error: "Unauthorized Uses" }, { status: 401 });
+    }
+
+    const cacheKey = `subConfettiChannels:${session.user.id}`;
+    const cached = await redis.get<string>(cacheKey);
+
+    if (cached) {
+      const subConfettiChannels =
+        typeof cached === "string" ? JSON.parse(cached) : cached;
+
+      return NextResponse.json(
+        { subConfettiChannels, cached: true },
+        { status: 200 },
+      );
+    }
+
+    const subConfettiChannels = await db.subConfettiChannel.findMany({
+      where: {
+        members: {
+          some: {
+            userId: session.user.id,
+          },
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+        image: true,
+      },
+    });
+
+    await redis.set(cacheKey, JSON.stringify(subConfettiChannels), {
+      ex: 300,
+    });
+
+    return NextResponse.json(
+      { subConfettiChannels, cached: false },
+      { status: 200 },
+    );
+  } catch (error) {
+    return NextResponse.json({ error }, { status: 500 });
   }
 }
