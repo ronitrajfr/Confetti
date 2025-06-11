@@ -2,6 +2,7 @@ import "~/styles/globals.css";
 import Providers from "~/components/Provider";
 import { type Metadata } from "next";
 import { Geist } from "next/font/google";
+import TanstackProvider from "~/components/TanstackProvider";
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -20,7 +21,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${geist.variable}`}>
       <Providers>
-        <body>{children}</body>
+        <body>
+          <TanstackProvider>{children}</TanstackProvider>
+        </body>
       </Providers>
     </html>
   );
