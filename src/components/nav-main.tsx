@@ -5,6 +5,7 @@ import Image from "next/image";
 import React from "react";
 import { SidebarGroup, SidebarMenuItem } from "~/components/ui/sidebar";
 import SubConfettiModal from "./subConfetti-modal";
+import Link from "next/link";
 
 interface NavMainProps {
   items: {
@@ -21,7 +22,7 @@ export const NavMain = React.memo(function NavMain({ items }: NavMainProps) {
       <SubConfettiModal />
       {items.map((item) => (
         <SidebarMenuItem key={item.url} className="group relative">
-          <a
+          <Link
             href={item.url}
             className="hover:bg-muted flex items-center justify-between gap-2 rounded px-3 py-2 text-sm"
           >
@@ -40,7 +41,7 @@ export const NavMain = React.memo(function NavMain({ items }: NavMainProps) {
               <span className="truncate">r/{item.title}</span>
             </div>
             <Star className="text-muted-foreground h-4 w-4 opacity-60 transition group-hover:opacity-100" />
-          </a>
+          </Link>
         </SidebarMenuItem>
       ))}
     </SidebarGroup>
