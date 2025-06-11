@@ -1,103 +1,47 @@
 "use client";
 
-import { ChevronRight, PieChart, Globe, type LucideIcon } from "lucide-react";
+import { Star } from "lucide-react";
+import Image from "next/image";
+import { SidebarGroup, SidebarMenuItem } from "~/components/ui/sidebar";
+import SubConfettiModal from "./subConfetti-modal";
 
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "~/components/ui/collapsible";
-import {
-  SidebarGroup,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
-} from "~/components/ui/sidebar";
-
-const iconMap: Record<string, LucideIcon> = {
-  PieChart,
-  Globe,
-};
-
-export function NavMain({
-  items,
-}: {
+interface NavMainProps {
   items: {
     title: string;
     url: string;
-    icon?: string;
-    isActive?: boolean;
-    items?: {
-      title: string;
-      url: string;
-    }[];
+    image: string | null;
   }[];
-}) {
+}
+
+export function NavMain({ items }: NavMainProps) {
+  console.log(items);
   return (
-    <SidebarGroup>
-      <SidebarMenu>
-        <SidebarMenuItem>
-          <SidebarMenuButton asChild tooltip="Dashboard">
-            <a href="/dashboard">
-              <PieChart />
-              <span>Dashboard</span>
-            </a>
-          </SidebarMenuButton>
+    <SidebarGroup className="flex flex-col gap-1 px-2">
+      <SubConfettiModal />
+      {items.map((item) => (
+        <SidebarMenuItem key={item.url} className="group relative">
+          <a
+            href={item.url}
+            className="hover:bg-muted flex items-center justify-between gap-2 rounded px-3 py-2 text-sm"
+          >
+            <div className="flex items-center gap-2 truncate">
+              {item.image ? (
+                <img
+                  src={item.image}
+                  alt={item.title}
+                  width={28}
+                  height={28}
+                  className="rounded-full"
+                />
+              ) : (
+                <div className="bg-muted h-6 w-6 rounded-full" />
+              )}
+              <span className="truncate">r/{item.title}</span>
+            </div>
+            <Star className="text-muted-foreground h-4 w-4 opacity-60 transition group-hover:opacity-100" />
+          </a>
         </SidebarMenuItem>
-        {items.map((item) =>
-          item.items ? (
-            <Collapsible
-              key={item.url}
-              asChild
-              defaultOpen={item.isActive}
-              className="group/collapsible"
-            >
-              <SidebarMenuItem>
-                <CollapsibleTrigger asChild>
-                  <SidebarMenuButton tooltip={item.title}>
-                    {item.icon &&
-                      (() => {
-                        const IconComponent = iconMap[item.icon!];
-                        return IconComponent ? <IconComponent /> : null;
-                      })()}
-                    <span>{item.title}</span>
-                    <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-                  </SidebarMenuButton>
-                </CollapsibleTrigger>
-                <CollapsibleContent>
-                  <SidebarMenuSub>
-                    {item.items?.map((subItem) => (
-                      <SidebarMenuSubItem key={subItem.url}>
-                        <SidebarMenuSubButton asChild>
-                          <a href={subItem.url}>
-                            <span>{subItem.title}</span>
-                          </a>
-                        </SidebarMenuSubButton>
-                      </SidebarMenuSubItem>
-                    ))}
-                  </SidebarMenuSub>
-                </CollapsibleContent>
-              </SidebarMenuItem>
-            </Collapsible>
-          ) : (
-            <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton asChild tooltip={item.title}>
-                <a href={item.url}>
-                  {item.icon &&
-                    (() => {
-                      const IconComponent = iconMap[item.icon!];
-                      return IconComponent ? <IconComponent /> : null;
-                    })()}
-                  <span>{item.title}</span>
-                </a>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ),
-        )}
-      </SidebarMenu>
+      ))}
     </SidebarGroup>
   );
 }

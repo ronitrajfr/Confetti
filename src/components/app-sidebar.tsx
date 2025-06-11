@@ -1,9 +1,7 @@
 "use client";
-import { auth } from "~/server/auth";
-import { db } from "~/server/db";
+
 import * as React from "react";
-import { NavMain } from "~/components/nav-main";
-import { Logo } from "~/components/logo";
+import { useQuery } from "@tanstack/react-query";
 import {
   Sidebar,
   SidebarContent,
@@ -11,8 +9,9 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "~/components/ui/sidebar";
-import { redirect } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
+import { Logo } from "~/components/logo";
+import { NavMain } from "~/components/nav-main";
+import { AppSidebarSkeleton } from "~/components/app-sidebar-skeleton";
 
 interface subConfettiChannel {
   id: string;
@@ -20,34 +19,30 @@ interface subConfettiChannel {
   image: string | null;
 }
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export const AppSidebar = React.memo(function AppSidebar(
+  props: React.ComponentProps<typeof Sidebar>,
+) {
   const { isPending, error, data } = useQuery({
     queryKey: ["sidebarServers"],
     queryFn: () => fetch("/api/subConfetti").then((res) => res.json()),
-    staleTime: 60 * 1000,
+    staleTime: 5 * 60 * 1000, // 5 minutes instead of 1 minute
+    gcTime: 10 * 60 * 1000,
   });
-
-  const navItems = [
-    {
-      title: "Websites",
-      url: "#",
-      icon: "Globe",
-      items: data?.subConfettiChannels.map(
-        (subConfettiChannel: subConfettiChannel) => ({
-          title: subConfettiChannel.name,
-          url: `/s/${subConfettiChannel.id}`,
-        }),
-      ),
-    },
-  ];
 
   if (error) {
     return (
       <div className="flex h-full w-full items-center justify-center bg-black text-2xl text-white">
-        error occured while fetching the data
+        error occurred while fetching the data
       </div>
     );
   }
+
+  const navItems =
+    data?.subConfettiChannels?.map((channel: subConfettiChannel) => ({
+      title: channel.name,
+      url: `/s/${channel.id}`,
+      image: channel.image,
+    })) || [];
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -55,25 +50,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <Logo />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={navItems} />
+        {isPending ? <AppSidebarSkeleton /> : <NavMain items={navItems} />}
       </SidebarContent>
-      <SidebarFooter></SidebarFooter>
+      <SidebarFooter />
       <SidebarRail />
     </Sidebar>
   );
-}
-
-export const AppSidebarSkeleton = () => {
-  return (
-    <Sidebar collapsible="icon">
-      <SidebarHeader>
-        <Logo />
-      </SidebarHeader>
-      <SidebarContent>
-        <NavMain items={[]} />
-      </SidebarContent>
-      <SidebarFooter></SidebarFooter>
-      <SidebarRail />
-    </Sidebar>
-  );
-};
+});

@@ -1,10 +1,11 @@
 import "~/styles/globals.css";
-import Providers from "~/components/Provider";
-import { type Metadata } from "next";
 import { Geist } from "next/font/google";
+import { type Metadata } from "next";
+import Providers from "~/components/Provider";
 import TanstackProvider from "~/components/TanstackProvider";
 import { ThemeProvider } from "~/components/theme-provider";
-import { AppSidebar, AppSidebarSkeleton } from "~/components/app-sidebar";
+import { AppSidebar } from "~/components/app-sidebar";
+import { AppSidebarSkeleton } from "~/components/app-sidebar-skeleton";
 import {
   SidebarInset,
   SidebarProvider,
@@ -29,8 +30,8 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${geist.variable}`} suppressHydrationWarning>
-      <Providers>
-        <body>
+      <body>
+        <Providers>
           <TanstackProvider>
             <ThemeProvider
               attribute="class"
@@ -58,8 +59,8 @@ export default function RootLayout({
               </SidebarProvider>
             </ThemeProvider>
           </TanstackProvider>
-        </body>
-      </Providers>
+        </Providers>
+      </body>
     </html>
   );
 }
