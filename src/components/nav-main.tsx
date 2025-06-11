@@ -2,6 +2,7 @@
 
 import { Star } from "lucide-react";
 import Image from "next/image";
+import React from "react";
 import { SidebarGroup, SidebarMenuItem } from "~/components/ui/sidebar";
 import SubConfettiModal from "./subConfetti-modal";
 
@@ -13,7 +14,7 @@ interface NavMainProps {
   }[];
 }
 
-export function NavMain({ items }: NavMainProps) {
+export const NavMain = React.memo(function NavMain({ items }: NavMainProps) {
   console.log(items);
   return (
     <SidebarGroup className="flex flex-col gap-1 px-2">
@@ -44,4 +45,4 @@ export function NavMain({ items }: NavMainProps) {
       ))}
     </SidebarGroup>
   );
-}
+});

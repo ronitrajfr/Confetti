@@ -12,6 +12,7 @@ import {
 import { Logo } from "~/components/logo";
 import { NavMain } from "~/components/nav-main";
 import { AppSidebarSkeleton } from "~/components/app-sidebar-skeleton";
+import { useMemo } from "react";
 
 interface subConfettiChannel {
   id: string;
@@ -25,8 +26,11 @@ export const AppSidebar = React.memo(function AppSidebar(
   const { isPending, error, data } = useQuery({
     queryKey: ["sidebarServers"],
     queryFn: () => fetch("/api/subConfetti").then((res) => res.json()),
-    staleTime: 5 * 60 * 1000, // 5 minutes instead of 1 minute
-    gcTime: 10 * 60 * 1000,
+    staleTime: Infinity,
+    gcTime: Infinity,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
   });
 
   if (error) {
@@ -37,12 +41,15 @@ export const AppSidebar = React.memo(function AppSidebar(
     );
   }
 
-  const navItems =
-    data?.subConfettiChannels?.map((channel: subConfettiChannel) => ({
-      title: channel.name,
-      url: `/s/${channel.id}`,
-      image: channel.image,
-    })) || [];
+  const navItems = useMemo(() => {
+    return (
+      data?.subConfettiChannels?.map((channel: subConfettiChannel) => ({
+        title: channel.name,
+        url: `/s/${channel.id}`,
+        image: channel.image,
+      })) || []
+    );
+  }, [data?.subConfettiChannels]);
 
   return (
     <Sidebar collapsible="icon" {...props}>
