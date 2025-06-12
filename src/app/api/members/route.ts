@@ -97,7 +97,7 @@ export async function POST(req: NextRequest) {
     const headersList = await headers();
     const ip = headersList.get("x-forwarded-for") ?? "anonymous";
     const { success, limit, reset, remaining } =
-      await getReqRateLimit.limit(ip);
+      await postReqRateLimit.limit(ip);
 
     if (!success) {
       return NextResponse.json(
@@ -152,7 +152,7 @@ export async function DELETE(req: NextRequest) {
     const headersList = await headers();
     const ip = headersList.get("x-forwarded-for") ?? "anonymous";
     const { success, limit, reset, remaining } =
-      await getReqRateLimit.limit(ip);
+      await postReqRateLimit.limit(ip);
 
     if (!success) {
       return NextResponse.json(
