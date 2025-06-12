@@ -8,7 +8,6 @@ export default async function page({
   return (
     <div className="=">
       <p>subConfettichannel ID: {id}</p>
-      {/* Your other page content */}
     </div>
   );
 }
