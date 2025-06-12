@@ -246,6 +246,17 @@ export async function PATCH(req: NextRequest) {
       { status: 200 },
     );
   } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === "P2002") {
+        const target = error.meta?.target as string[];
+        if (target?.includes("username")) {
+          return NextResponse.json(
+            { error: "Username already exists" },
+            { status: 409 },
+          );
+        }
+      }
+    }
     return NextResponse.json({ error }, { status: 500 });
   }
 }
