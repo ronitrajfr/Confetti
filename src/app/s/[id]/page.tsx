@@ -6,8 +6,9 @@ export default async function page({
   const { id } = await params;
 
   return (
-    <div>
+    <div className="=">
       <p>subConfettichannel ID: {id}</p>
+      {/* Your other page content */}
     </div>
   );
 }

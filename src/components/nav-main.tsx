@@ -19,7 +19,6 @@ export const NavMain = React.memo(function NavMain({ items }: NavMainProps) {
   console.log(items);
   return (
     <SidebarGroup className="flex flex-col gap-1 px-2">
-      <SubConfettiModal />
       {items.map((item) => (
         <SidebarMenuItem key={item.url} className="group relative">
           <Link

@@ -13,6 +13,7 @@ import { Logo } from "~/components/logo";
 import { NavMain } from "~/components/nav-main";
 import { AppSidebarSkeleton } from "~/components/app-sidebar-skeleton";
 import { useMemo } from "react";
+import SubConfettiModal from "./subConfetti-modal";
 
 interface subConfettiChannel {
   id: string;
@@ -55,6 +56,7 @@ export const AppSidebar = React.memo(function AppSidebar(
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <Logo />
+        <SubConfettiModal />
       </SidebarHeader>
       <SidebarContent>
         {isPending ? <AppSidebarSkeleton /> : <NavMain items={navItems} />}
