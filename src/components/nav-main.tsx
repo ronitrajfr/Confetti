@@ -36,7 +36,7 @@ export const NavMain = React.memo(function NavMain({ items }: NavMainProps) {
               ) : (
                 <div className="bg-muted h-6 w-6 rounded-full" />
               )}
-              <span className="truncate">r/{item.title}</span>
+              <span className="truncate">s/{item.title}</span>
             </div>
             <Star className="text-muted-foreground h-4 w-4 opacity-60 transition group-hover:opacity-100" />
           </Link>

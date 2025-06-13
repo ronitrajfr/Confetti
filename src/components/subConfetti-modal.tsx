@@ -4,6 +4,7 @@ import type React from "react";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "~/components/ui/button";
+import { UploadButton } from "@uploadthing/react";
 import {
   Dialog,
   DialogContent,
@@ -67,7 +68,7 @@ export default function SubConfettiModal() {
       setOpen(false);
     },
 
-    onError: (err) => {
+    onError: (err: any) => {
       console.error("Channel creation failed:", err);
       alert(err.message);
     },
@@ -179,23 +180,27 @@ export default function SubConfettiModal() {
 
               <div className="space-y-2">
                 <Label
-                  htmlFor="image"
+                  htmlFor="image-upload"
                   className="flex items-center gap-2 text-sm font-medium"
                 >
                   <ImageIcon className="h-4 w-4" />
                   Channel Image (Optional)
                 </Label>
-                <Input
-                  id="image"
-                  type="url"
-                  placeholder="https://example.com/image.jpg"
-                  value={formData.image}
-                  onChange={(e) => handleInputChange("image", e.target.value)}
+                <UploadButton
+                  endpoint="imageUploader"
+                  onClientUploadComplete={(res) => {
+                    if (res && res.length > 0) {
+                      const uploadedUrl = res[0].url;
+                      handleInputChange("image", uploadedUrl);
+                    }
+                  }}
+                  onUploadError={(error: Error) => {
+                    alert(`Upload error: ${error.message}`);
+                  }}
                 />
               </div>
             </div>
 
-            {/* Footer */}
             <DialogFooter className="gap-2 pt-4">
               <Button
                 type="button"
