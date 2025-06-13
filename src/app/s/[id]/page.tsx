@@ -18,7 +18,6 @@ export default async function page({
   const { id } = await params;
 
   const { isMember } = await checkMembership(id);
-  console.log(isMember);
 
   if (!isMember) {
     return (
