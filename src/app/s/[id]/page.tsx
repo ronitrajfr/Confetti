@@ -1,17 +1,31 @@
 import { DiscordSidebar } from "~/components/members-sidebar";
 import { checkMembership } from "~/actions/check-membership";
+import JoinChannelModal from "~/components/join-channel-modal";
+import { auth } from "~/server/auth";
+//import { useRouter } from "next/navigation";
+
 export default async function page({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
+  //const router = useRouter();
+  const session = await auth();
+
+  if (!session?.user) {
+    return null;
+  }
   const { id } = await params;
 
   const { isMember } = await checkMembership(id);
   console.log(isMember);
 
   if (!isMember) {
-    return <div>you are not fucking part of this server</div>;
+    return (
+      <div>
+        <JoinChannelModal channelId={id} />
+      </div>
+    );
   }
 
   return (

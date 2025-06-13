@@ -1,6 +1,6 @@
 "use client";
 
-import { useSession, signIn } from "next-auth/react";
+import { useSession, signIn, signOut } from "next-auth/react";
 
 import Link from "next/link";
 
@@ -24,6 +24,14 @@ export default function HomePage() {
             className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
           >
             Signin
+          </button>
+          <button
+            onClick={async () => {
+              await signOut();
+            }}
+            className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
+          >
+            Signout
           </button>
 
           <Link

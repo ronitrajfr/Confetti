@@ -14,7 +14,7 @@ export function Logo() {
       <SidebarMenuItem>
         <SidebarMenuButton size="lg" className="justify-start" asChild>
           <Link href="/" className="flex items-center justify-center gap-2">
-            <span className="text-xl font-bold">Ayoni</span>
+            <span className="text-xl font-bold">Confetti</span>
           </Link>
         </SidebarMenuButton>
       </SidebarMenuItem>
