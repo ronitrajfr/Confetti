@@ -4,7 +4,7 @@ import type React from "react";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "~/components/ui/button";
-import { UploadButton } from "@uploadthing/react";
+import { UploadButton } from "~/utils/uploadthing";
 import {
   Dialog,
   DialogContent,
@@ -190,7 +190,7 @@ export default function SubConfettiModal() {
                   endpoint="imageUploader"
                   onClientUploadComplete={(res) => {
                     if (res && res.length > 0) {
-                      const uploadedUrl = res[0].url;
+                      const uploadedUrl = res[0]!.url;
                       handleInputChange("image", uploadedUrl);
                     }
                   }}
