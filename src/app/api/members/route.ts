@@ -66,6 +66,20 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ members, cached: true }, { status: 200 });
     }
 
+    const isMember = await db.member.findFirst({
+      where: {
+        subConfettiChannelId: validatedId,
+        userId: session.user.id,
+      },
+    });
+
+    if (!isMember) {
+      return NextResponse.json(
+        { error: "Forbidden, you are not part of this channel" },
+        { status: 403 },
+      );
+    }
+
     const members = await db.member.findMany({
       where: {
         subConfettiChannelId: validatedId,

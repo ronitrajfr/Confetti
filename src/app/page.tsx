@@ -1,6 +1,14 @@
+"use client";
+
+import { useSession, signIn } from "next-auth/react";
+
 import Link from "next/link";
 
 export default function HomePage() {
+  const { data: session } = useSession();
+
+  console.log(session);
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
       <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
@@ -9,7 +17,12 @@ export default function HomePage() {
         </h1>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
-          <button className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20">
+          <button
+            onClick={async () => {
+              await signIn("google");
+            }}
+            className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
+          >
             Signin
           </button>
 

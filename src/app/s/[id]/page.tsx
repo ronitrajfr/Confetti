@@ -1,3 +1,5 @@
+import { DiscordSidebar } from "~/components/members-sidebar";
+
 export default async function page({
   params,
 }: {
@@ -8,6 +10,7 @@ export default async function page({
   return (
     <div className="=">
       <p>subConfettichannel ID: {id}</p>
+      <DiscordSidebar channelId={id} />
     </div>
   );
 }
