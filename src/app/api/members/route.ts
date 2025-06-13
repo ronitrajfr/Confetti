@@ -150,6 +150,7 @@ export async function POST(req: NextRequest) {
     });
 
     await redis.del(`subConfetti:members:${id}`);
+    await redis.del(`subConfettiChannels:${session.user.id}`);
 
     return NextResponse.json({ member: newMember }, { status: 201 });
   } catch (error) {
@@ -212,6 +213,7 @@ export async function DELETE(req: NextRequest) {
     await db.member.delete({ where: { id: member.id } });
 
     await redis.del(`subConfetti:members:${confettiChannelId}`);
+    await redis.del(`subConfettiChannels:${session.user.id}`);
 
     return NextResponse.json(
       { message: "You left this channel" },

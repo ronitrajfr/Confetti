@@ -58,6 +58,7 @@ export default function JoinChannelModal({ channelId }: JoinChannelProps) {
     onSuccess: () => {
       // Invalidate and refetch members queries
       queryClient.invalidateQueries({ queryKey: ["members"] });
+      queryClient.invalidateQueries({ queryKey: ["sidebarServers"] });
       setOpen(false);
       // Refresh the page to show the channel content
       router.refresh();
